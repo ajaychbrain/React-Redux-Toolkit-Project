@@ -1,23 +1,23 @@
 import React, {useState, useEffect} from 'react'
 import { add } from '../Redux/CartSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getProducts, stauses } from '../Redux/Middleware/ProductSlice';
 
 const Home = () => {
-    const [products, setProducts] = useState([]);
+ 
     const dispatch = useDispatch();
+    const {data:products, status} = useSelector((state)=>state.product)
     useEffect(()=>{
-        const fetchProduct = async()=>{
-            const res = await fetch("https://fakestoreapi.com/products");
-            const data = await res.json();
-            setProducts(data);
-        }
-        fetchProduct();
+        dispatch(getProducts())
     },[])
 
     const addToCart = (product)=>{
         dispatch(add(product));
     }
 
+    if(status === stauses.loading){
+        return <h2 style={{fontWeight: 'bolder'}}>Loading....</h2>
+    }
 
   return (
     <div style={{marginTop:'43px'}}>
