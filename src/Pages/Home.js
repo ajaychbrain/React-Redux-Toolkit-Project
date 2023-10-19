@@ -6,10 +6,13 @@ import { getProducts, stauses } from '../Redux/Middleware/ProductSlice';
 const Home = () => {
  
     const dispatch = useDispatch();
-    const {data:products, status} = useSelector((state)=>state.product)
+    const {data, status} = useSelector((state)=>state.product)
     useEffect(()=>{
         dispatch(getProducts())
     },[])
+
+    // console.log(products)
+
 
     const addToCart = (product)=>{
         dispatch(add(product));
@@ -22,16 +25,25 @@ const Home = () => {
   return (
     <div style={{marginTop:'43px'}}>
     <div className='productsWrapper'>
-      {
-        products.map((product)=>(
+     
+      {console.log(data.length)}
+     {
+      data.length>0 ?
+      
+        data.map((product)=>(
             <div className='card' key={product.id}>
                 <img src={product.image} alt='img'/>
                 <h4>{product.title}</h4>
                 <h5>{product.price}</h5>
                 <button className='btn' onClick={()=>addToCart(product)}>Add to Cart</button>
             </div>
-        ))  
-      }
+        )):<h3>No Product Available</h3>
+      
+
+     }
+     
+      
+      
     </div>
     </div>
   )

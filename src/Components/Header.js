@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 
 const Header = () => {
     const items = useSelector((state)=>state.cart)
-    console.log(items.length);
+    // console.log(items.length);
   return (
     <div style={{display:'flex', alignItems:'center',justifyContent:'space-around'}}>
         <span>Ecommerce App</span>
