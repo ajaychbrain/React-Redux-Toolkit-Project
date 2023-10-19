@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react'
 import { add } from '../Redux/CartSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, stauses } from '../Redux/Middleware/ProductSlice';
+import { getProducts } from '../Redux/Middleware/ProductSlice';
 
 const Home = () => {
- 
+  const {data, loading} = useSelector((state)=>state.product)
     const dispatch = useDispatch();
-    const {data, status} = useSelector((state)=>state.product)
+ 
     useEffect(()=>{
         dispatch(getProducts())
     },[])
+
+    if(loading){
+      return <h3>Loading Data!</h3>
+    }
+
 
     // console.log(products)
 
@@ -18,9 +23,6 @@ const Home = () => {
         dispatch(add(product));
     }
 
-    if(status === stauses.loading){
-        return <h2 style={{fontWeight: 'bolder'}}>Loading....</h2>
-    }
 
   return (
     <div style={{marginTop:'43px'}}>

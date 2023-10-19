@@ -1,50 +1,48 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+// Applying Middleware 
+export const getProducts = createAsyncThunk(
+    "product/getProducts", async ()=> {
+        return fetch("https://fakestoreapi.com/products").then((res)=>res.json());
+    });
 
 
-export const stauses = Object.freeze(
-    {
-        success: 'success',
-        error : 'error',
-        loading : 'loading'
-    }
-)
+
+
 const productSlice = createSlice({
     name: 'product',
     initialState:{
         data:[],
-        status: stauses.success,
+        loading: false
     },
-    reducers:{
-        setproducts(state,action)
-        {
-            state.data = action.payload;
+    // reducers:{
+    //     setproducts(state,action)
+    //     {
+    //         state.data = action.payload;
+    //     },
+    //     setStatus(state,action)
+    //     {
+    //         state.status = action.payload;
+    //     }
+    // }
+    extraReducers: {
+        [getProducts.pending]: (state, action)=>{
+            state.loading = true;
         },
-        setStatus(state,action)
-        {
-            state.status = action.payload;
-        }
-    }
-})
+        [getProducts.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.data = action.payload
+        },
+        [getProducts.rejected]: (state, action) => {
+            state.loading = false;
+        },
+    },
 
-export const {setproducts, setStatus} = productSlice.actions;
+
+
+});
+
+// export const {setproducts, setStatus} = productSlice.actions;
 export default productSlice.reducer;
 
 
-// Applying Middleware 
-export function getProducts(){
-    return async function fetchproductThunk(dispatch){
-        dispatch(setStatus(stauses.loading));
-        try {
-            const res = await fetch("https://fakestoreapi.com/products");
-            const data = await res.json();
-            dispatch(setproducts(data));
-            dispatch(setStatus(stauses.success));
-
-        }catch(error)
-        {
-            console.log(error)
-            dispatch(setStatus(stauses.error))
-        }
-    }
-}
